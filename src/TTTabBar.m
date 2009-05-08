@@ -86,6 +86,19 @@ static const NSInteger kMaxBadgeNumber = 99;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // NSObject
 
+- (id)initWithCoder:(NSCoder *)decoder {
+  if (self = [super initWithCoder:decoder]) {
+    _selectedTabIndex = NSIntegerMax;
+    _tabItems = nil;
+    _tabViews = [[NSMutableArray alloc] init];
+    _tabStyle = nil;
+		
+    self.style = TTSTYLE(tabBar);
+    self.tabStyle = @"tab:";
+  }
+  return self;
+}
+ 
 - (id)initWithFrame:(CGRect)frame  {
   if (self = [super initWithFrame:frame]) {
     _selectedTabIndex = NSIntegerMax;
