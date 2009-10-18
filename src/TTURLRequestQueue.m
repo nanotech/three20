@@ -429,7 +429,13 @@ static TTURLRequestQueue* gMainQueue = nil;
     }
   } else {
     ++_totalLoading;
-    [loader load:[NSURL URLWithString:loader.URL]];
+    NSURL *url = nil;
+    if ([loader.URL hasPrefix:@"/"]) {
+      url = [NSURL fileURLWithPath:loader.URL];
+    } else {
+      url = [NSURL URLWithString:loader.URL];
+    }
+    [loader load:url];
   }
 }
 

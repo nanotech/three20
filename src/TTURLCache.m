@@ -115,6 +115,11 @@ static NSMutableDictionary* gNamedCaches = nil;
   return [UIImage imageWithData:data];
 }
 
+- (UIImage*)loadImageFromPath:(NSString*)path {
+  NSData* data = [NSData dataWithContentsOfFile:path];
+  return [UIImage imageWithData:data];
+}
+
 - (NSString*)createTemporaryURL {
   static int temporaryURLIncrement = 0;
   return [NSString stringWithFormat:@"temp:%d", temporaryURLIncrement++];
@@ -251,11 +256,15 @@ static NSMutableDictionary* gNamedCaches = nil;
 - (id)imageForURL:(NSString*)URL fromDisk:(BOOL)fromDisk {
   UIImage* image = [_imageCache objectForKey:URL];
   if (!image && fromDisk) {
-    if (TTIsBundleURL(URL)) {
+    if ([URL hasPrefix:@"/"]) {
+      image = [self loadImageFromPath:URL];
+    } else if (TTIsBundleURL(URL)) {
       image = [self loadImageFromBundle:URL];
-      [self storeImage:image forURL:URL];
     } else if (TTIsDocumentsURL(URL)) {
       image = [self loadImageFromDocuments:URL];
+    }
+
+    if (image) {
       [self storeImage:image forURL:URL];
     }
   }
