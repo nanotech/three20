@@ -120,6 +120,34 @@ static const CGFloat kDesiredTableHeight = 150;
   searchesAutomatically = _searchesAutomatically, showsDoneButton = _showsDoneButton,
   showsDarkScreen = _showsDarkScreen;
 
+- (id)initWithCoder:(NSCoder *)decoder {
+  if (self = [super initWithCoder:decoder]) {
+    _internal = [[TTSearchTextFieldInternal alloc] initWithTextField:self];
+    _dataSource = nil;
+    _tableView = nil;
+    _shadowView = nil;
+    _screenView = nil;
+    _searchTimer = nil;
+    _previousNavigationItem = nil;
+    _previousRightBarButtonItem = nil;
+    _rowHeight = 0;
+    _showsDoneButton = NO;
+    _showsDarkScreen = NO;
+
+    // Avoid fixing content mode here, because it will be specified in XIB
+
+    self.searchesAutomatically = YES;
+    
+    [self addTarget:self action:@selector(didBeginEditing)
+      forControlEvents:UIControlEventEditingDidBegin];
+    [self addTarget:self action:@selector(didEndEditing)
+      forControlEvents:UIControlEventEditingDidEnd];
+
+    [super setDelegate:_internal];
+  }
+  return self;
+}
+ 
 - (id)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     _internal = [[TTSearchTextFieldInternal alloc] initWithTextField:self];

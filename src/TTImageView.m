@@ -68,7 +68,7 @@
   if (self = [super initWithCoder:decoder]) {
     _delegate = nil;
     _request = nil;
-    _url = nil;
+    _URL = nil;
     _image = nil;
     _defaultImage = nil;
     _autoresizesToImage = NO;

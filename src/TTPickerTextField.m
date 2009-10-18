@@ -19,6 +19,21 @@ static CGFloat kMinCursorWidth = 50;
 
 @synthesize cellViews = _cellViews, selectedCell = _selectedCell, lineCount = _lineCount;
 
+- (id)initWithCoder:(NSCoder *)decoder {
+  if (self = [super initWithCoder:decoder]) {
+    _cellViews = [[NSMutableArray alloc] init];
+    _selectedCell = nil;
+    _lineCount = 1;
+    _cursorOrigin = CGPointZero;
+
+    // Avoid fixing content mode here, because it will be specified in XIB
+
+    [self addTarget:self action:@selector(textFieldDidEndEditing)
+      forControlEvents:UIControlEventEditingDidEnd];
+  }
+  return self;
+}
+ 
 - (id)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     _cellViews = [[NSMutableArray alloc] init];
