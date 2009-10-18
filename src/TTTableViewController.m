@@ -23,7 +23,7 @@ static const CGFloat kBannerViewHeight = 22;
             tableOverlayView = _tableOverlayView,
             loadingView = _loadingView, errorView= _errorView, emptyView = _emptyView,
             menuView = _menuView, dataSource = _dataSource, tableViewStyle = _tableViewStyle,
-            variableHeightRows = _variableHeightRows;
+            variableHeightRows = _variableHeightRows, activityLabelStyle = _activityLabelStyle;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // private
@@ -125,6 +125,7 @@ static const CGFloat kBannerViewHeight = 22;
     _bannerTimer = nil;
     _variableHeightRows = NO;
     _tableViewStyle = style;
+    _activityLabelStyle = TTActivityLabelStyleWhiteBox;
     _lastInterfaceOrientation = self.interfaceOrientation;
   }
   return self;
@@ -305,7 +306,7 @@ static const CGFloat kBannerViewHeight = 22;
                         ? [_dataSource titleForLoading:NO]
                         : [self defaultTitleForLoading];
       if (title.length) {
-        TTActivityLabel* label = [[[TTActivityLabel alloc] initWithStyle:TTActivityLabelStyleWhiteBox]
+        TTActivityLabel* label = [[[TTActivityLabel alloc] initWithStyle:_activityLabelStyle]
                                     autorelease];
         label.text = title;
         label.backgroundColor = _tableView.backgroundColor;

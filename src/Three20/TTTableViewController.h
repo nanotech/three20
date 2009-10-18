@@ -1,7 +1,6 @@
 #import "Three20/TTModelViewController.h"
 #import "Three20/TTTableViewDataSource.h"
-
-@class TTActivityLabel;
+#import "Three20/TTActivityLabel.h"
 
 @interface TTTableViewController : TTModelViewController {
   UITableView* _tableView;
@@ -18,6 +17,7 @@
   UITableViewStyle _tableViewStyle;
   UIInterfaceOrientation _lastInterfaceOrientation;
   BOOL _variableHeightRows;
+  TTActivityLabelStyle _activityLabelStyle;
 }
 
 @property(nonatomic,retain) UITableView* tableView;
@@ -37,6 +37,8 @@
 @property(nonatomic,retain) UIView* emptyView;
 
 @property(nonatomic,readonly) UIView* menuView;
+
+@property(nonatomic,assign) TTActivityLabelStyle activityLabelStyle;
 
 /** 
  * The data source used to populate the table view.
