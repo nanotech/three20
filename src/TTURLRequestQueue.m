@@ -91,6 +91,12 @@ static TTURLRequestQueue* gMainQueue = nil;
   NSURLRequest *URLRequest = [_queue createNSURLRequest:request URL:URL];
 
   _connection = [[NSURLConnection alloc] initWithRequest:URLRequest delegate:self];
+
+  for (id<TTURLRequestDelegate> delegate in request.delegates) {
+    if ([delegate respondsToSelector:@selector(requestDidStartLoad:)]) {
+      [delegate requestDidStartLoad:request];
+    }
+  }
 }
 
 - (void)cancel {
@@ -522,12 +528,6 @@ static TTURLRequestQueue* gMainQueue = nil;
     return YES;
   }
 
-  for (id<TTURLRequestDelegate> delegate in request.delegates) {
-    if ([delegate respondsToSelector:@selector(requestDidStartLoad:)]) {
-      [delegate requestDidStartLoad:request];
-    }
-  }
-  
   if (!request.URL.length) {
     NSError* error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
     for (id<TTURLRequestDelegate> delegate in request.delegates) {
