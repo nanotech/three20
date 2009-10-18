@@ -19,7 +19,9 @@ static const NSTimeInterval kOvershoot = 2;
 @synthesize delegate = _delegate, dataSource = _dataSource, centerPageIndex = _centerPageIndex,
   pageSpacing = _pageSpacing, scrollEnabled = _scrollEnabled, zoomEnabled = _zoomEnabled,
   rotateEnabled = _rotateEnabled, orientation = _orientation,
-  holding = _holding, holdsAfterTouchingForInterval = _holdsAfterTouchingForInterval;
+  holding = _holding, holdsAfterTouchingForInterval = _holdsAfterTouchingForInterval,
+  offscreenPages = _offscreenPages, pageWidthFactor = _pageWidthFactor,
+  pageHeightFactor = _pageHeightFactor;
 
 - (id)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
@@ -29,10 +31,13 @@ static const NSTimeInterval kOvershoot = 2;
     
     _delegate = nil;
     _dataSource = nil;
-    _maxPages = (kOffscreenPages*2) + 1;
-    _pages = [[NSMutableArray alloc] initWithCapacity:_maxPages];
+    _pages = [[NSMutableArray alloc] init];
+    self.offscreenPages = kOffscreenPages;
+    //_maxPages = (_offscreenPages*2) + 1;
     _pageQueue = [[NSMutableArray alloc] init];
     _pageSpacing = kDefaultPageSpacing;
+    _pageWidthFactor = 1.0;
+    _pageHeightFactor = 1.0;
     _centerPageIndex = 0;
     _visiblePageIndex = kInvalidIndex;
     _pageArrayIndex = 0;
@@ -82,6 +87,16 @@ static const NSTimeInterval kOvershoot = 2;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (void)setOffscreenPages:(NSInteger)theOffscreenPages
+{
+	_offscreenPages = theOffscreenPages;
+	_maxPages = (_offscreenPages*2) + 1;
+	
+	for (NSInteger i = _pages.count; i < _maxPages; ++i) {
+		[_pages addObject:[NSNull null]];
+    }
+}
+
 - (BOOL)isFirstPage {
   return _centerPageIndex == 0;
 }
@@ -129,17 +144,17 @@ static const NSTimeInterval kOvershoot = 2;
 
 - (CGFloat)pageWidth {
   if (UIInterfaceOrientationIsLandscape(_orientation)) {
-    return self.height;
+    return self.height * _pageHeightFactor;
   } else {
-    return self.width;
+    return self.width * _pageWidthFactor;
   }
 }
 
 - (CGFloat)pageHeight {
   if (UIInterfaceOrientationIsLandscape(_orientation)) {
-    return self.width;
+    return self.width * _pageWidthFactor;
   } else {
-    return self.height;
+    return self.height * _pageHeightFactor;
   }
 }
 
@@ -238,7 +253,7 @@ static const NSTimeInterval kOvershoot = 2;
   }
   
   NSInteger indexDiff = pageIndex - baseIndex;
-  if (fabs(indexDiff) > kOffscreenPages) {
+  if (fabs(indexDiff) > _offscreenPages) {
     return kInvalidIndex;
   }
 
@@ -358,16 +373,16 @@ static const NSTimeInterval kOvershoot = 2;
 
   NSInteger indexDiff = pageIndex - _centerPageIndex;
   if (indexDiff) {
-    if (fabs(indexDiff) <= kOffscreenPages) {
+    if (fabs(indexDiff) <= _offscreenPages) {
       if (indexDiff > 0) {
-        NSInteger edgeIndex = _centerPageIndex - kOffscreenPages;
-        NSInteger newEdgeIndex = pageIndex - kOffscreenPages;
+        NSInteger edgeIndex = _centerPageIndex - _offscreenPages;
+        NSInteger newEdgeIndex = pageIndex - _offscreenPages;
         for (int i = edgeIndex; i < newEdgeIndex; ++i) {
           [self enqueuePageAtIndex:i];
         }
       } else if (indexDiff < 0) {
-        NSInteger edgeIndex = _centerPageIndex + kOffscreenPages;
-        NSInteger newEdgeIndex = pageIndex + kOffscreenPages;
+        NSInteger edgeIndex = _centerPageIndex + _offscreenPages;
+        NSInteger newEdgeIndex = pageIndex + _offscreenPages;
         for (int i = edgeIndex; i > newEdgeIndex; --i) {
           [self enqueuePageAtIndex:i];
         }
@@ -408,8 +423,8 @@ static const NSTimeInterval kOvershoot = 2;
   BOOL pinched = self.pinched;
   CGAffineTransform rotation = TTRotateTransformForOrientation(_orientation);
 
-  NSInteger minPageIndex = _centerPageIndex - kOffscreenPages;
-  NSInteger maxPageIndex = _centerPageIndex + kOffscreenPages;
+  NSInteger minPageIndex = _centerPageIndex - _offscreenPages;
+  NSInteger maxPageIndex = _centerPageIndex + _offscreenPages;
 
   CGRect centerFrame = [self frameOfPageAtIndex:_centerPageIndex];
   CGFloat centerPageOverflow = [self overflowForFrame:centerFrame] * self.zoomFactor;
@@ -559,7 +574,7 @@ static const NSTimeInterval kOvershoot = 2;
 
 - (UIEdgeInsets)resistPageEdges:(UIEdgeInsets)edges {
   CGFloat left = edges.left, right = edges.right, top = edges.top, bottom = edges.bottom;
-  CGFloat width = self.pageWidth, height = self.pageHeight;
+  CGFloat width = self.pageWidth / _pageWidthFactor, height = self.pageHeight / _pageHeightFactor;
   
   if (-left + right < 0 || -top + bottom < 0) {
     CGFloat zoom = self.zoomFactor;
@@ -1084,7 +1099,7 @@ static const NSTimeInterval kOvershoot = 2;
     [visiblePages setObject:self.centerPage forKey:[NSNumber numberWithInt:_centerPageIndex]];
   }
   
-  NSInteger minPageIndex = _centerPageIndex - kOffscreenPages;
+  NSInteger minPageIndex = _centerPageIndex - _offscreenPages;
   for (NSInteger i = _centerPageIndex - 1; i >= 0 && i >= minPageIndex; --i) {
     UIView* page = [self pageAtIndex:i create:YES];
     if (page) {
@@ -1092,7 +1107,7 @@ static const NSTimeInterval kOvershoot = 2;
     }
   }
 
-  NSInteger maxPageIndex = _centerPageIndex + kOffscreenPages;
+  NSInteger maxPageIndex = _centerPageIndex + _offscreenPages;
   NSInteger pageCount = [_dataSource numberOfPagesInScrollView:self];
   for (NSInteger i = _centerPageIndex + 1; i < pageCount && i <= maxPageIndex; ++i) {  
     UIView* page = [self pageAtIndex:i create:YES];

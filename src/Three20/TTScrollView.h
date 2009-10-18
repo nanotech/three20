@@ -12,11 +12,14 @@
   BOOL _zoomEnabled;
   BOOL _rotateEnabled;
   CGFloat _pageSpacing;
+  CGFloat _pageWidthFactor;
+  CGFloat _pageHeightFactor;
   UIInterfaceOrientation _orientation;
   NSTimeInterval _holdsAfterTouchingForInterval;
   
   NSMutableArray* _pages;
   NSMutableArray* _pageQueue;
+  NSInteger _offscreenPages;
   NSInteger _maxPages;
   NSInteger _pageArrayIndex;
   NSTimer* _tapTimer;
@@ -81,7 +84,22 @@
 /**
  *
  */
+@property(nonatomic) NSInteger offscreenPages;
+
+/**
+ *
+ */
 @property(nonatomic) CGFloat pageSpacing;
+
+/**
+ *
+ */
+@property(nonatomic) CGFloat pageWidthFactor;
+
+/**
+ *
+ */
+@property(nonatomic) CGFloat pageHeightFactor;
 
 /**
  *
@@ -139,6 +157,11 @@
  * Cancels any active touches and resets everything to an untouched state.
  */
 - (void)cancelTouches;
+
+
+- (CGRect)frameOfPageAtIndex:(NSInteger)pageIndex;
+- (void)startAnimationTo:(UIEdgeInsets)edges duration:(NSTimeInterval)duration;
+- (UIEdgeInsets)pageEdgesForAnimation;
 
 @end
 
