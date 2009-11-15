@@ -53,6 +53,11 @@
  */
 @property(nonatomic) UITableViewStyle tableViewStyle;
 
+/**
+ * Override to use a custom UITableView subclass.
+ */
+- (UITableView*)createTableViewWithFrame:(CGRect)frame style:(UITableViewStyle)style;
+
 /** 
  * Indicates if the table should support non-fixed row heights.
  */

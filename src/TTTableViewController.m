@@ -455,9 +455,13 @@ static const CGFloat kBannerViewHeight = 22;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // public
 
+- (UITableView*)createTableViewWithFrame:(CGRect)frame style:(UITableViewStyle)style {
+  return [[[TTTableView alloc] initWithFrame:frame style:style] autorelease];
+}
+
 - (UITableView*)tableView {
   if (!_tableView) {
-    _tableView = [[TTTableView alloc] initWithFrame:self.view.bounds style:_tableViewStyle];
+    _tableView = [[self createTableViewWithFrame:self.view.bounds style:_tableViewStyle] retain];
     _tableView.autoresizingMask =  UIViewAutoresizingFlexibleWidth
                                    | UIViewAutoresizingFlexibleHeight;
 
