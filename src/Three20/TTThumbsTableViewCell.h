@@ -19,6 +19,7 @@
 @property(nonatomic) NSInteger columnCount;
 
 - (void)suspendLoading:(BOOL)suspended;
+- (id)createThumbView;
 
 @end
 

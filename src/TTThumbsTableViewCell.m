@@ -114,7 +114,7 @@ static CGFloat kDefaultThumbSize = 75;
     _columnCount = columnCount;
     
     for (NSInteger i = _thumbViews.count; i < _columnCount; ++i) {
-      TTThumbView* thumbView = [[[TTThumbView alloc] init] autorelease];
+      TTThumbView* thumbView = [self createThumbView];
       [thumbView addTarget:self action:@selector(thumbTouched:)
                  forControlEvents:UIControlEventTouchUpInside];
       [self.contentView addSubview:thumbView];
@@ -124,6 +124,10 @@ static CGFloat kDefaultThumbSize = 75;
       }
     }
   }
+}
+
+- (id)createThumbView {
+	return [[[TTThumbView alloc] init] autorelease];
 }
 
 - (void)setPhoto:(id<TTPhoto>)photo {
