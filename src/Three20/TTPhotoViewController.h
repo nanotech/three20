@@ -55,6 +55,11 @@
  */
 @property(nonatomic,retain) TTStyle* captionStyle;
 
+/**
+ * Whether or not the toolbars are showing.
+ */
+@property(nonatomic,readonly) BOOL isShowingChrome;
+
 - (id)initWithPhoto:(id<TTPhoto>)photo;
 - (id)initWithPhotoSource:(id<TTPhotoSource>)photoSource;
 
