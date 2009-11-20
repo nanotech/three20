@@ -69,7 +69,7 @@ static NSMutableDictionary* gNamedCaches = nil;
   while (_imageSortedList.count) {
     NSString* key = [_imageSortedList objectAtIndex:0];
     UIImage* image = [_imageCache objectForKey:key];
-    // TTLOG(@"EXPIRING %@", key);
+    // TTDINFO(@"EXPIRING %@", key);
 
     _totalPixelCount -= image.size.width * image.size.height;
     [_imageCache removeObjectForKey:key];
@@ -236,7 +236,7 @@ static NSMutableDictionary* gNamedCaches = nil;
   if ([fm fileExistsAtPath:filePath]) {
     NSDictionary* attrs = [fm attributesOfItemAtPath:filePath error:nil];
     NSDate* modified = [attrs objectForKey:NSFileModificationDate];
-    if (expirationAge && [modified timeIntervalSinceNow] < -expirationAge) {
+    if ([modified timeIntervalSinceNow] < -expirationAge) {
       return nil;
     }
     if (timestamp) {
@@ -421,12 +421,14 @@ static NSMutableDictionary* gNamedCaches = nil;
 }
 
 - (void)logMemoryUsage {
-  TTLOG(@"======= IMAGE CACHE: %d images, %d pixels ========", _imageCache.count, _totalPixelCount);
+#if TTLOGLEVEL_INFO <= TTMAXLOGLEVEL
+  TTDINFO(@"======= IMAGE CACHE: %d images, %d pixels ========", _imageCache.count, _totalPixelCount);
   NSEnumerator* e = [_imageCache keyEnumerator];
   for (NSString* key ; key = [e nextObject]; ) {
     UIImage* image = [_imageCache objectForKey:key];
-    TTLOG(@"  %f x %f %@", image.size.width, image.size.height, key);
-  }  
+    TTDINFO(@"  %f x %f %@", image.size.width, image.size.height, key);
+  }
+#endif
 }
 
 @end

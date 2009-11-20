@@ -98,7 +98,7 @@
 }
 
 - (void)dealloc {
-  TTLOG(@"DEALLOC %@", self);
+  TTDINFO(@"DEALLOC %@", self);
 
   [[TTURLRequestQueue mainQueue] cancelRequestsWithDelegate:self];
 
@@ -177,12 +177,13 @@
 }
 
 - (void)didReceiveMemoryWarning {
-  TTLOG(@"MEMORY WARNING FOR %@", self);
+  TTDINFO(@"MEMORY WARNING FOR %@", self);
 
   if (_hasViewAppeared && !_isViewAppearing) {
     NSMutableDictionary* state = [[NSMutableDictionary alloc] init];
     [self persistView:state];
     self.frozenState = state;
+    TT_RELEASE_SAFELY(state);
   
     // This will come around to calling viewDidUnload
     [super didReceiveMemoryWarning];
