@@ -16,16 +16,35 @@
 
 #import "TTGlobalNetwork.h"
 
-static int gNetworkTaskCount = 0;
-
 void TTNetworkRequestStarted() {
-  if (gNetworkTaskCount++ == 0) {
+}
+
+void TTNetworkRequestStopped() {
+}
+
+
+static NSMutableSet *activeNetworkObjects;
+
+@implementation TTNetworkIndicatorManager
+
++ (void)initialize {
+  if (self == [TTNetworkIndicatorManager class]) {
+    activeNetworkObjects = [[NSMutableSet alloc] init];
+  }
+}
+
++ (void)registerNetworkObject:(id)object {
+  [activeNetworkObjects addObject:object];
+  if ([activeNetworkObjects count] > 0) {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
   }
 }
 
-void TTNetworkRequestStopped() {
-  if (--gNetworkTaskCount == 0) {
++ (void)unregisterNetworkObject:(id)object {
+  [activeNetworkObjects removeObject:object];
+  if ([activeNetworkObjects count] == 0) {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
   }
 }
+
+@end

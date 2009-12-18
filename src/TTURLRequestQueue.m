@@ -106,12 +106,13 @@ static TTURLRequestQueue* gMainQueue = nil;
 
 - (void)connectToURL:(NSURL*)URL {
   TTDCONDITIONLOG(TTDFLAG_URLREQUEST, @"Connecting to %@", _URL);
-  TTNetworkRequestStarted();
 
   TTURLRequest* request = _requests.count == 1 ? [_requests objectAtIndex:0] : nil;
   NSURLRequest *URLRequest = [_queue createNSURLRequest:request URL:URL];
 
   _connection = [[NSURLConnection alloc] initWithRequest:URLRequest delegate:self];
+
+  [TTNetworkIndicatorManager registerNetworkObject:_connection];
 
   for (id<TTURLRequestDelegate> delegate in request.delegates) {
     if ([delegate respondsToSelector:@selector(requestDidStartLoad:)]) {
@@ -207,7 +208,7 @@ static TTURLRequestQueue* gMainQueue = nil;
 }
  
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-  TTNetworkRequestStopped();
+  [TTNetworkIndicatorManager unregisterNetworkObject:_connection];
 
   if (_response.statusCode == 200) {
     [_queue performSelector:@selector(loader:didLoadResponse:data:) withObject:self
@@ -227,7 +228,7 @@ static TTURLRequestQueue* gMainQueue = nil;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {  
   TTDCONDITIONLOG(TTDFLAG_URLREQUEST, @"  FAILED LOADING %@ FOR %@", _URL, error);
 
-  TTNetworkRequestStopped();
+  [TTNetworkIndicatorManager unregisterNetworkObject:_connection];
   
   TT_RELEASE_SAFELY(_responseData);
   TT_RELEASE_SAFELY(_connection);
@@ -267,10 +268,11 @@ static TTURLRequestQueue* gMainQueue = nil;
 - (void)loadSynchronously:(NSURL*)URL {
   // This method simulates an asynchronous network connection. If your delegate isn't being called
   // correctly, this would be the place to start tracing for errors.
-  TTNetworkRequestStarted();
 
   TTURLRequest* request = _requests.count == 1 ? [_requests objectAtIndex:0] : nil;
   NSURLRequest* URLRequest = [_queue createNSURLRequest:request URL:URL];
+
+  [TTNetworkIndicatorManager registerNetworkObject:_connection];
 
   NSHTTPURLResponse* response = nil;
   NSError* error = nil;
@@ -280,7 +282,7 @@ static TTURLRequestQueue* gMainQueue = nil;
                      error: &error];
 
   if (nil != error) {
-    TTNetworkRequestStopped();
+    [TTNetworkIndicatorManager unregisterNetworkObject:_connection];
 
     TT_RELEASE_SAFELY(_responseData);
     TT_RELEASE_SAFELY(_connection);
@@ -312,7 +314,7 @@ static TTURLRequestQueue* gMainQueue = nil;
     [_queue performSelector:@selector(loaderDidCancel:wasLoading:) withObject:self
             withObject:(id)!!_connection];
     if (_connection) {
-      TTNetworkRequestStopped();
+      [TTNetworkIndicatorManager unregisterNetworkObject:_connection];
       [_connection cancel];
       TT_RELEASE_SAFELY(_connection);
     }

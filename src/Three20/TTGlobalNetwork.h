@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "TTCorePreprocessorMacros.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Networking
@@ -38,15 +39,37 @@ typedef enum {
 
 /**
  * Increment the number of active network requests.
- *
  * The status bar activity indicator will be spinning while there are active requests.
+ *
+ * @deprecated This is now a no-op, use TTNetworkIndicatorManager instead.
  */
-void TTNetworkRequestStarted();
+void TTNetworkRequestStarted() __TTDEPRECATED_METHOD;
 
 /**
  * Decrement the number of active network requests.
- *
  * The status bar activity indicator will be spinning while there are active requests.
+ *
+ * @deprecated This is now a no-op, use TTNetworkIndicatorManager instead.
  */
-void TTNetworkRequestStopped();
+void TTNetworkRequestStopped() __TTDEPRECATED_METHOD;
 
+
+/**
+ * Keeps track of objects that are using the network, and updates the network
+ * activity indicator in the status bar accordingly.
+ */
+@interface TTNetworkIndicatorManager : NSObject {
+}
+
+/**
+ * Registers an object as using the network, and displays the indicator.
+ */
++ (void)registerNetworkObject:(id)object;
+
+/**
+ * Unregisters an object as using the network. When there are zero objects
+ * using the network, the indicator is hidden.
+ */
++ (void)unregisterNetworkObject:(id)object;
+
+@end
