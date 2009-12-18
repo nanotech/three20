@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#import "TTGlobalNetwork.h"
+#import "Three20/TTGlobalNetwork.h"
 
 void TTNetworkRequestStarted() {
 }

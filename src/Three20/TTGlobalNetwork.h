@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "TTCorePreprocessorMacros.h"
+#import "Three20/TTCorePreprocessorMacros.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Networking
