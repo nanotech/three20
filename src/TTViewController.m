@@ -152,12 +152,14 @@
 - (void)loadView {
   [super loadView];
   
-  CGRect frame = self.wantsFullScreenLayout ? TTScreenBounds() : TTNavigationFrame(); 
-  self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
-	self.view.autoresizesSubviews = YES;
-	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth
-                              | UIViewAutoresizingFlexibleHeight;
-  self.view.backgroundColor = TTSTYLEVAR(backgroundColor);
+  if (!self.view) {
+    CGRect frame = self.wantsFullScreenLayout ? TTScreenBounds() : TTNavigationFrame();
+    self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
+    self.view.autoresizesSubviews = YES;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth
+                               | UIViewAutoresizingFlexibleHeight;
+    self.view.backgroundColor = TTSTYLEVAR(backgroundColor);
+  }
 }
 
 - (void)viewDidUnload {
