@@ -175,4 +175,17 @@ static CGFloat kDefaultThumbSize = 75;
   }
 }
 
+- (TTThumbView*)thumbViewOfPhoto:(id<TTPhoto>)thePhoto
+{
+  NSString *photoURL = [thePhoto URLForVersion:TTPhotoVersionThumbnail];
+
+  for (TTThumbView* thumbView in _thumbViews) {
+    if ([thumbView.thumbURL isEqualToString:photoURL]) {
+      return thumbView;
+    }
+  }
+ 
+  return nil;
+}
+
 @end

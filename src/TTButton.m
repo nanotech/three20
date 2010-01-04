@@ -32,27 +32,6 @@ static const CGFloat kVPadding = 7;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-@interface TTButtonContent : NSObject <TTURLRequestDelegate> {
-  TTButton* _button;
-  NSString* _title;
-  NSString* _imageURL;
-  UIImage* _image;
-  TTStyle* _style;
-  TTURLRequest* _request;
-}
-
-@property(nonatomic,copy) NSString* title;
-@property(nonatomic,copy) NSString* imageURL;
-@property(nonatomic,retain) UIImage* image;
-@property(nonatomic,retain) TTStyle* style;
-
-- (id)initWithButton:(TTButton*)button;
-
-- (void)reload;
-- (void)stopLoading;
-
-@end
-
 @implementation TTButtonContent
 
 @synthesize title = _title, imageURL = _imageURL, image = _image, style = _style;
@@ -194,7 +173,7 @@ static const CGFloat kVPadding = 7;
   id key = [self keyForState:state];
   TTButtonContent* content = [_content objectForKey:key];
   if (!content) {
-    content = [[[TTButtonContent alloc] initWithButton:self] autorelease];
+    content = [self createContentForButton:self];
     [_content setObject:content forKey:key];
   }
   
@@ -478,6 +457,11 @@ static const CGFloat kVPadding = 7;
   }
 
   return CGRectZero;
+}
+
+- (TTButtonContent*)createContentForButton:(TTButton*)button
+{
+  return [[[TTButtonContent alloc] initWithButton:self] autorelease];
 }
 
 @end

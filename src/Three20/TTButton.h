@@ -15,6 +15,8 @@
 //
 
 #import "Three20/TTStyle.h"
+#import "Three20/TTURLRequest.h"
+@class TTButtonContent;
 
 @interface TTButton : UIControl <TTStyleDelegate> {
   NSMutableDictionary* _content;
@@ -37,6 +39,9 @@
 - (TTStyle*)styleForState:(UIControlState)state;
 - (void)setStyle:(TTStyle*)style forState:(UIControlState)state;
 
+- (NSString*)titleForCurrentState;
+- (UIImage*)imageForCurrentState;
+
 /**
  * Sets the styles for all control states using a single style selector.
  *
@@ -49,4 +54,32 @@
 
 - (CGRect)rectForImage;
 
+/**
+ * Override in a subclass to use a custom TTButtonContent subclass.
+ */
+- (TTButtonContent*)createContentForButton:(TTButton*)button;
+
 @end
+
+
+@interface TTButtonContent : NSObject <TTURLRequestDelegate> {
+	TTButton* _button;
+	NSString* _title;
+	NSString* _imageURL;
+	UIImage* _image;
+	TTStyle* _style;
+	TTURLRequest* _request;
+}
+
+@property(nonatomic,copy) NSString* title;
+@property(nonatomic,copy) NSString* imageURL;
+@property(nonatomic,retain) UIImage* image;
+@property(nonatomic,retain) TTStyle* style;
+
+- (id)initWithButton:(TTButton*)button;
+
+- (void)reload;
+- (void)stopLoading;
+
+@end
+

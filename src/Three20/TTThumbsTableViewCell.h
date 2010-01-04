@@ -37,6 +37,8 @@
 - (void)suspendLoading:(BOOL)suspended;
 - (id)createThumbView;
 
+- (TTThumbView*)thumbViewOfPhoto:(id<TTPhoto>)thePhoto;
+
 @end
 
 @protocol TTThumbsTableViewCellDelegate
