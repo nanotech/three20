@@ -93,6 +93,15 @@
 - (TTThumbsViewController*)createThumbsViewController;
 
 /**
+ * Sets up the toolbar's items.
+ *
+ * Do not call this directly. It is meant to be overriden by subclasses.
+ */
+- (UIToolbar*)setupToolbar:(UIToolbar*)toolbar
+            previousButton:(UIBarButtonItem*)previousButton
+                nextButton:(UIBarButtonItem*)nextButton;
+
+/**
  * Sent to the controller after it moves from one photo to another.
  */
 - (void)didMoveToPhoto:(id<TTPhoto>)photo fromPhoto:(id<TTPhoto>)fromPhoto;

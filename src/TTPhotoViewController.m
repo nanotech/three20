@@ -389,16 +389,17 @@ static const NSInteger kActivityLabelTag = 96;
     UIBarButtonSystemItemPlay target:self action:@selector(playAction)] autorelease];
   playButton.tag = 1;
 
-  UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
-   UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
+  UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:
+                        CGRectMake(0, screenFrame.size.height - TT_ROW_HEIGHT,
+                                   screenFrame.size.width, TT_ROW_HEIGHT)];
 
-  _toolbar = [[UIToolbar alloc] initWithFrame:
-    CGRectMake(0, screenFrame.size.height - TT_ROW_HEIGHT,
-               screenFrame.size.width, TT_ROW_HEIGHT)];
-  _toolbar.barStyle = self.navigationBarStyle;
-  _toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
-  _toolbar.items = [NSArray arrayWithObjects:
-                   space, _previousButton, space, _nextButton, space, nil];
+  toolbar.barStyle = self.navigationBarStyle;
+  toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+
+  _toolbar = [self setupToolbar:toolbar
+                 previousButton:_previousButton
+                     nextButton:_nextButton];
+
   [_innerView addSubview:_toolbar];    
 }
 
@@ -673,6 +674,20 @@ static const NSInteger kActivityLabelTag = 96;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // public
+
+- (UIToolbar*)setupToolbar:(UIToolbar*)toolbar
+            previousButton:(UIBarButtonItem*)previousButton
+                nextButton:(UIBarButtonItem*)nextButton {
+
+  UIBarButtonItem* space =
+  [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+    UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
+
+  toolbar.items = [NSArray arrayWithObjects:
+                    space, previousButton, space, nextButton, space, nil];
+
+  return toolbar;
+}
 
 - (void)setPhotoSource:(id<TTPhotoSource>)photoSource {
   if (_photoSource != photoSource) {
