@@ -34,17 +34,32 @@ static NSMutableSet *activeNetworkObjects;
 }
 
 + (void)registerNetworkObject:(id)object {
-  [activeNetworkObjects addObject:object];
-  if ([activeNetworkObjects count] > 0) {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+  // Only check for nil on release builds.
+  // We want it to crash here during
+  // debugging if the object is nil.
+#ifndef DEBUG
+  if (object) {
+#endif
+    [activeNetworkObjects addObject:object];
+    if ([activeNetworkObjects count] > 0) {
+      [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+#ifndef DEBUG
   }
+#endif
 }
 
 + (void)unregisterNetworkObject:(id)object {
-  [activeNetworkObjects removeObject:object];
-  if ([activeNetworkObjects count] == 0) {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-  }
+#ifndef DEBUG
+	if (object) {
+#endif
+    [activeNetworkObjects removeObject:object];
+    if ([activeNetworkObjects count] == 0) {
+      [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    }
+#ifndef DEBUG
+	}
+#endif
 }
 
 @end
