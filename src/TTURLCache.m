@@ -215,6 +215,7 @@ static NSMutableDictionary* gNamedCaches = nil;
 
 - (NSString *)keyForURL:(NSString*)URL {
   const char* str = [URL UTF8String];
+  if (!str) { return nil; }
   unsigned char result[CC_MD5_DIGEST_LENGTH];
   CC_MD5(str, strlen(str), result);
 
@@ -378,7 +379,8 @@ static NSMutableDictionary* gNamedCaches = nil;
 }
 
 - (void)removeURL:(NSString*)URL fromDisk:(BOOL)fromDisk {
-  NSString*  key = [self keyForURL:URL];
+  NSString* key = [self keyForURL:URL];
+  if (!key) { return; }
   [_imageSortedList removeObject:key];
   [_imageCache removeObjectForKey:key];
   
