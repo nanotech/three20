@@ -17,6 +17,11 @@
 #import <Foundation/Foundation.h>
 
 /**
+ * @return YES if the URL begins with "/"
+ */
+BOOL TTIsFileURL(NSString* URL);
+
+/**
  * @return YES if the URL begins with "bundle://"
  */
 BOOL TTIsBundleURL(NSString* URL);
@@ -35,3 +40,13 @@ NSString* TTPathForBundleResource(NSString* relativePath);
  * @return The documents path concatenated with the given relative path.
  */
 NSString* TTPathForDocumentsResource(NSString* relativePath);
+
+/**
+ * @return TTPathForBundleResource shortcut that strips off the url scheme.
+ */
+NSString* TTPathForBundleResourceURL(NSString* urlPath);
+
+/**
+ * @return TTPathForDocumentsResource shortcut that strips off the url scheme.
+ */
+NSString* TTPathForDocumentsResourceURL(NSString* urlPath);

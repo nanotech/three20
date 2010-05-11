@@ -18,6 +18,12 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+BOOL TTIsFileURL(NSString* URL) {
+  return [URL hasPrefix:@"/"];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 BOOL TTIsBundleURL(NSString* URL) {
   return [URL hasPrefix:@"bundle://"];
 }
@@ -45,4 +51,16 @@ NSString* TTPathForDocumentsResource(NSString* relativePath) {
     documentsPath = [[dirs objectAtIndex:0] retain];
   }
   return [documentsPath stringByAppendingPathComponent:relativePath];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+NSString* TTPathForBundleResourceURL(NSString* relativePath) {
+  return TTPathForBundleResource([relativePath substringFromIndex:9]);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+NSString* TTPathForDocumentsResourceURL(NSString* relativePath) {
+  return TTPathForBundleResource([relativePath substringFromIndex:12]);
 }

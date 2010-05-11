@@ -93,25 +93,7 @@ static TTURLRequestQueue* gMainQueue = nil;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO (jverkoey May 3, 2010): Clean up this redundant code.
-- (BOOL)dataExistsInBundle:(NSString*)URL {
-  NSString* path = TTPathForBundleResource([URL substringFromIndex:9]);
-  NSFileManager* fm = [NSFileManager defaultManager];
-  return [fm fileExistsAtPath:path];
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (BOOL)dataExistsInDocuments:(NSString*)URL {
-  NSString* path = TTPathForDocumentsResource([URL substringFromIndex:12]);
-  NSFileManager* fm = [NSFileManager defaultManager];
-  return [fm fileExistsAtPath:path];
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSData*)loadFromBundle:(NSString*)URL error:(NSError**)error {
-  NSString* path = TTPathForBundleResource([URL substringFromIndex:9]);
+- (NSData*)loadFromFile:(NSString*)path error:(NSError**)error {
   NSFileManager* fm = [NSFileManager defaultManager];
   if ([fm fileExistsAtPath:path]) {
     return [NSData dataWithContentsOfFile:path];
@@ -124,16 +106,16 @@ static TTURLRequestQueue* gMainQueue = nil;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSData*)loadFromDocuments:(NSString*)URL error:(NSError**)error {
-  NSString* path = TTPathForDocumentsResource([URL substringFromIndex:12]);
-  NSFileManager* fm = [NSFileManager defaultManager];
-  if ([fm fileExistsAtPath:path]) {
-    return [NSData dataWithContentsOfFile:path];
-  } else if (error) {
-    *error = [NSError errorWithDomain:NSCocoaErrorDomain
-                      code:NSFileReadNoSuchFileError userInfo:nil];
+- (NSString*)pathForURL:(NSString*)URL {
+  if (TTIsFileURL(URL)) {
+    return URL;
+  } else if (TTIsBundleURL(URL)) {
+    return TTPathForBundleResourceURL(URL);
+  } else if (TTIsDocumentsURL(URL)) {
+    return TTPathForDocumentsResourceURL(URL);
+  } else {
+    return nil;
   }
-  return nil;
 }
 
 
@@ -158,14 +140,11 @@ static TTURLRequestQueue* gMainQueue = nil;
     return YES;
 
   } else if (fromDisk) {
-    if (TTIsBundleURL(URL)) {
-      *data = [self loadFromBundle:URL error:error];
-      return YES;
+    NSString *path = [self pathForURL:URL];
 
-    } else if (TTIsDocumentsURL(URL)) {
-      *data = [self loadFromDocuments:URL error:error];
+    if (nil != path) {
+      *data = [self loadFromFile:path error:error];
       return YES;
-
     } else {
       *data = [[TTURLCache sharedCache] dataForKey:cacheKey expires:expirationAge
                                         timestamp:timestamp];
@@ -187,12 +166,10 @@ static TTURLRequestQueue* gMainQueue = nil;
   BOOL hasData = [[TTURLCache sharedCache] hasImageForURL:URL fromDisk:fromDisk];
 
   if (!hasData && fromDisk) {
-    if (TTIsBundleURL(URL)) {
-      hasData = [self dataExistsInBundle:URL];
+    NSString *path = [self pathForURL:URL];
 
-    } else if (TTIsDocumentsURL(URL)) {
-      hasData = [self dataExistsInDocuments:URL];
-
+    if (nil != path) {
+      hasData = [[NSFileManager defaultManager] fileExistsAtPath:URL];
     } else {
       hasData = [[TTURLCache sharedCache] hasDataForKey:cacheKey expires:expirationAge];
     }
@@ -277,13 +254,7 @@ static TTURLRequestQueue* gMainQueue = nil;
     }
   } else {
     ++_totalLoading;
-    NSURL *url = nil;
-    if ([loader.urlPath hasPrefix:@"/"]) {
-      url = [NSURL fileURLWithPath:loader.urlPath];
-    } else {
-      url = [NSURL URLWithString:loader.urlPath];
-    }
-    [loader load:url];
+    [loader load:[NSURL URLWithString:loader.urlPath]];
   }
 }
 
