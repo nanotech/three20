@@ -1,3 +1,129 @@
+Changes since April 23, 2010
+
+- [NEW] Three20 has been split into modular libraries. Please read the
+        Articles/AboutModules.mdown file to learn more about the process.
+
+- [NEW] Add templates for Three20 projects and source files.
+
+- [NEW] Add Articles/ directory dedicated to in-depth discussions of Three20
+        components.
+
+- [NEW] Etag support. See Articles/Network/Etag.mdown for more details.
+
+Changes since April 09, 2010
+
+- [NEW] New +Additions library header files.
+
+- [NEW] Network unit tests.
+
+- [NEW] Nib support moved to a separate 'nibs' branch.
+
+- [NEW] Added the JSON library.
+
+- [NEW] Add a TTFacebook sample project using the new Open Graph API.
+
+- [DOX] Style consistency throughout the entire framework.
+
+Changes since March 30, 2010
+
+- [NEW] New showTableShadows option for table gutter shadows.
+
+- [NEW] Nib support for TTViewControllers.
+
+- [NEW] TTNibDemo app demoing new Nib support.
+
+- [NEW] TTNetwork library.
+
+- [NEW] TTNetworkDemo example project.
+
+- [MINOR] Don't hard code the HTTP User-Agent.
+
+- [MINOR] Convert TTLink to use TTURLAction instead of just a URL.
+
+- [MINOR] Cleaning up and standardizing the coding style, about 70% complete.
+
+Changes since February 26, 2010
+
+- [NEW] arrayForKey in the TTXMLAdditions.
+
+- [NEW] Support for successful HTTP status codes from [200, 300).
+
+- [NEW] Three20Core library.
+
+- [NEW] TTCoreDemo example project.
+
+- [FIXED] UIImage's transformWidth:height:rotate: implementation.
+
+- [FIXED] Keyboard display notifications.
+
+- [DOX] Doug Barth contributed complete documentation of TTMessageController.
+
+Changes since February 1, 2010
+
+- [NEW] TTTwitter sample app. See the README.mdown file for in-depth details.
+
+- [NEW] TTXMLParser - A barebones XML parser that takes an XML string and creates an NSObject.
+        Options include support for RSS feeds. See the new TTTwitter sample app for an example.
+
+- [NEW] TTTableHeaderDragRefreshView, TTTableViewDragRefreshDelegate. These two new objects
+        together implement the "drag-to-refresh" table header seen in other apps on the app
+        store. Thanks to uprise78 for this fix.
+
+- [NEW] Add support for PUT HTTP methods. Thanks to dima.
+
+- [FIXED] github#71 navigationBarTintColor and toolbarTintColor issues for TTDefaultSheet
+          and TTWebController.
+
+- [FIXED] github#148 Add _toolbar.tintColor to TTPhotoViewController.
+
+- [DOCUMENTATION] TTURLRequestDelegate, TTURLRequest, TTURLRequestQueue, TTWebController,
+                  TTYouTubeView, TTTableViewDelegate*.
+
+- [BUILD] Add a prefix header to Debug and Release builds.
+
+- [BUILD] Add a new build mode "Debug Dev" for use when hacking on Three20.
+
+- [BUILD] Reduced include scope of TTDebugFlags.h for faster rebuild times when debugging.
+
+Changes since January 22, 2010
+
+- [NEW] TTURLAction object for TTNavigator.
+
+- [DEPRECATED] openURL methods of TTNavigator.
+
+- [DEPRECATED] TTImageView.URL => TTImageView.urlPath.
+
+- [DOCUMENTATION] Documented TTView, TTImageView, TTScrollView, TTYouTubeView,
+                  TTNavigator and co.
+
+- [MINOR] Cleaned up the debugging documentation.
+
+Changes since December 25, 2009
+
+- [NEW] TTURLRequest didReceiveAuthenticationChallenge for authentication challenges.
+
+- [DEPRECATED] isWhitespace. Use isWhitespaceAndNewlines instead.
+
+- [XCODE] Refactoring problems solved. TTUserInfo weak/strong properties renamed
+          to weakRef/strongRef, respectively.
+
+- [MINOR] Use __PRETTY_FUNCTION__ for debug logs. (@steipete)
+
+Changes from December 18, 2009
+
+- [NEW] TTRecursiveProgress object for recursive progress (go figure!)
+        See TTRecursiveProgress.h for more details
+
+- [LOCALE] Numerous fixes to diffstrings
+
+- [LOCALE] Make --merge in diffstrings actually work
+
+- [LOCALE] Update German, Spanish, Italian, Japanese, Chinese, and Taiwanese
+
+- [NETWORK] TTNetworkRequestStarted/Stopped now threadsafe.
+
+- [CRASHFIX] Synchronous connections modifying non-threadsafe members
+
 Changes from December 11, 2009
 
 - [NEW] -[NSDate formatShortRelativeTime]
