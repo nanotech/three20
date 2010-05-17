@@ -72,6 +72,7 @@ static const CGFloat kBannerViewHeight = 22;
   if (self = [super init]) {
     _tableViewStyle = style;
     _lastInterfaceOrientation = self.interfaceOrientation;
+    _activityLabelStyle = TTActivityLabelStyleWhiteBox;
   }
 
   return self;
